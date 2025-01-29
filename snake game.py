@@ -8,16 +8,16 @@ screen.title("Snake Game")
 screen.bgcolor("white")
 screen.setup(width=600, height=600)
 screen.tracer(0)  # Turn off screen updates
-# some needed variables
-colors = "red", "blue", "white", "black", "purple"
+
+# Some needed variables
+colors = "red", "blue", "green", "black", "purple"
+
 # Snake setup
 snake = []
-for i in range(3):  # Initial snake of length 3
-    segment = turtle.Turtle("square")
-    segment.color(random.choice(colors))
-    segment.penup()
-    segment.goto(-20 * i, 0)  # Arrange segments in a line
-    snake.append(segment)
+segment = turtle.Turtle("square")
+segment.color(random.choice(colors))
+segment.penup()
+snake.append(segment)
 
 # Food setup
 food = turtle.Turtle("circle")
@@ -26,7 +26,16 @@ food.penup()
 food.goto(random.randint(-280, 280), random.randint(-280, 280))
 
 # Score setup
-score = 0
+scores = 0
+high_score = 0  # Initialize high score
+
+# Scoreboard turtle
+score = turtle.Turtle()
+score.speed(0)
+score.penup()
+score.hideturtle()
+score.goto(0, 250)
+score.write(f"Score: {scores}  High Score: {high_score}", align="center", font=("Candara", 24, "bold"))
 
 # Movement
 direction = "stop"
@@ -62,14 +71,6 @@ while True:
     screen.update()
     time.sleep(0.1)  # Adjust speed
 
-    pen = turtle.Turtle()
-    pen.speed(0)
-    pen.penup()
-    pen.hideturtle()
-    pen.goto(0, 250)
-    pen.write("Score : 0  High Score : 0", align="center", font=("Candara", 24, "bold"))
-
-
     # Move the snake
     if direction != "stop":
         x, y = snake[0].pos()
@@ -94,8 +95,14 @@ while True:
         segment.color(random.choice(colors))
         segment.penup()
         snake.append(segment)
-        score += 10
-        print(f"Score: {score}")
+
+        # Update Score
+        scores += 10
+        if scores > high_score:
+            high_score = scores
+
+        score.clear()
+        score.write(f"Score: {scores}  High Score: {high_score}", align="center", font=("Courier", 24, "bold"))
 
     # Check for collision with walls
     x, y = snake[0].pos()
@@ -108,4 +115,5 @@ while True:
         if snake[0].distance(segment) < 10:
             print("Game Over!")
             break
+
 screen.mainloop()
